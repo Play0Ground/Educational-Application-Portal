@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational Application Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-bg: #f8f9fa;
+            --dark-bg: #212529;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            padding: 2rem 1rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .card-body {
+            padding: 2.5rem;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        h1:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            border-radius: 2px;
+        }
+
+        .btn-group {
+            background: var(--light-bg);
+            padding: 0.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .type-btn {
+            border: none !important;
+            padding: 1rem 2rem !important;
+            border-radius: 8px !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .type-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.2);
+        }
+
+        .type-btn.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color)) !important;
+            color: white !important;
+        }
+
+        .form-section {
+            display: none;
+            background: var(--light-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .form-section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.1);
+        }
+
+        /* Password Strength Meter */
+        .password-strength-meter {
+            margin-top: 10px;
+        }
+
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .check-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            border: 2px solid #ddd;
+            color: transparent;
+        }
+
+        .check-icon.valid {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+        }
+
+        .requirement-text {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .strength-bar {
+            height: 5px;
+            background: #e9ecef;
+            margin-top: 10px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0;
+            transition: all 0.3s ease;
+        }
+
+        .strength-fill.weak {
+            background-color: var(--danger-color);
+            width: 33.33%;
+        }
+
+        .strength-fill.medium {
+            background-color: var(--warning-color);
+            width: 66.66%;
+        }
+
+        .strength-fill.strong {
+            background-color: var(--success-color);
+            width: 100%;
+        }
+
+        /* PIN Validation */
+        .pin-validation {
+            margin-top: 10px;
+        }
+
+        .pin-requirement {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .pin-requirement i {
+            margin-right: 8px;
+            font-size: 12px;
+        }
+
+        .pin-requirement.valid {
+            color: var(--success-color);
+        }
+
+        .pin-requirement.invalid {
+            color: var(--danger-color);
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .toast.show {
+            display: block;
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Section Headings */
+        .section-heading {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light-bg);
+        }
+
+        /* Required Field Indicator */
+        .required-field {
+            color: var(--danger-color);
+            margin-left: 4px;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            .type-btn {
+                padding: 0.75rem 1rem !important;
+                font-size: 0.9rem;
+            }
+
+            .form-section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Toast Container -->
+    <div class="toast-container">
+        <div class="toast" id="notification-toast">
+            <div class="d-flex">
+                <div class="toast-body"></div>
+                <button type="button" class="btn-close me-2 m-auto" onclick="closeToast()"></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        <div class="card shadow-lg">
+            <div class="card-body p-4">
+                <h1 class="text-center mb-4">
+                    <i class="fas fa-graduation-cap"></i> Educational Application Portal
+                </h1>
+
+                <!-- Application Type Selection -->
+                <div class="row justify-content-center mb-4">
+                    <div class="col-md-8">
+                        <div class="btn-group w-100" role="group">
+                            <button class="btn btn-outline-primary type-btn active" onclick="showForm('university')" id="universityBtn">
+                                <i class="fas fa-university"></i> University
+                            </button>
+                            <button class="btn btn-outline-primary type-btn" onclick="showForm('college')">
+                                <i class="fas fa-school"></i> College
+                            </button>
+                            <button class="btn btn-outline-primary type-btn" onclick="showForm('bursary')">
+                                <i class="fas fa-hand-holding-usd"></i> Bursary
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Application Form -->
+                <form id="applicationForm" onsubmit="submitForm(event)" class="needs-validation" novalidate>
+                
+                    <!-- Personal Information Section -->
+                    <div class="section-heading">Personal Information</div>
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Full Names <span class="required-field">*</span></label>
+                            <input type="text" class="form-control" name="fullNames" required>
+                            <div class="invalid-feedback">Please enter your full names</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Surname <span class="required-field">*</span></label>
+                            <input type="text" class="form-control" name="surname" required>
+                            <div class="invalid-feedback">Please enter your surname</div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Gender <span class="required-field">*</span></label>
+                            <select class="form-select" name="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <div class="invalid-feedback">Please select your gender</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Race <span class="required-field">*</span></label>
+                            <select class="form-select" name="race" required>
+                                <option value="">Select Race</option>
+                                <option value="african">African</option>
+                                <option value="coloured">Coloured</option>
+                                <option value="indian">Indian</option>
+                                <option value="white">White</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <div class="invalid-feedback">Please select your race</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Marital Status <span class="required-field">*</span></label>
+                            <select class="form-select" name="maritalStatus" required>
+                                <option value="">Select Status</option>
+                                <option value="single">Single</option>
+                                <option value="married">Married</option>
+                                <option value="divorced">Divorced</option>
+                                <option value="widowed">Widowed</option>
+                            </select>
+                            <div class="invalid-feedback">Please select your marital status</div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email Address <span class="required-field">*</span></label>
+                            <input type="email" class="form-control" name="email" required>
+                            <div class="invalid-feedback">Please enter a valid email address</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Contact Number <span class="required-field">*</span></label>
+                            <input type="tel" class="form-control" name="phone" 
+                                   pattern="[0-9]{10}" required>
+                            <div class="invalid-feedback">Please enter a valid 10-digit phone number</div>
+                        </div>
+                    </div>
+
+                    <!-- Address Information -->
+                    <div class="section-heading">Residential Address</div>
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Street Address Line 1 <span class="required-field">*</span></label>
+                            <input type="text" class="form-control" name="addressLine1" required>
+                            <div class="invalid-feedback">Please enter your street address</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Street Address Line 2</label>
+                            <input type="text" class="form-control" name="addressLine2">
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Suburb <span class="required-field">*</span></label>
+                            <input type="text" class="form-control" name="suburb" required>
+                            <div class="invalid-feedback">Please enter your suburb</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">City <span class="required-field">*</span></label>
+                            <input type="text" class="form-control" name="city" required>
+                            <div class="invalid-feedback">Please enter your city</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Postal Code <span class="required-field">*</span></label>
+                            <input type="text" class="form-control" name="postalCode" 
+                                   pattern="[0-9]{4}" required>
+                            <div class="invalid-feedback">Please enter a valid 4-digit postal code</div></div>
+                        </div>
+    
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Province <span class="required-field">*</span></label>
+                                <select class="form-select" name="province" required>
+                                    <option value="">Select Province</option>
+                                    <option value="eastern-cape">Eastern Cape</option>
+                                    <option value="free-state">Free State</option>
+                                    <option value="gauteng">Gauteng</option>
+                                    <option value="kwazulu-natal">KwaZulu-Natal</option>
+                                    <option value="limpopo">Limpopo</option>
+                                    <option value="mpumalanga">Mpumalanga</option>
+                                    <option value="northern-cape">Northern Cape</option>
+                                    <option value="north-west">North West</option>
+                                    <option value="western-cape">Western Cape</option>
+                                </select>
+                                <div class="invalid-feedback">Please select your province</div>
+                            </div>
+                        </div>
+    
+                        <!-- Disability Status -->
+                        <div class="section-heading">Disability Information</div>
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Disability Status</label>
+                                <select class="form-select" name="disabilityStatus" id="disabilityStatus" onchange="toggleDisabilityDocs()">
+                                    <option value="no">No Disability</option>
+                                    <option value="yes">Yes, I have a disability</option>
+                                </select>
+                            </div>
+                        </div>
+    
+                        <!-- Disability Documentation Section -->
+                        <div id="disability-docs" style="display: none;">
+                            <div class="row mb-4">
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Describe your disability <span class="required-field">*</span></label>
+                                    <textarea class="form-control" name="disabilityDescription" rows="3"></textarea>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Upload Medical Certificate <span class="required-field">*</span></label>
+                                    <input type="file" class="form-control" name="medicalCertificate" accept="image/*,.pdf">
+                                    <small class="form-text text-muted">Upload relevant medical documentation (PDF or image)</small>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- Parent/Guardian Information -->
+                        <div class="section-heading">Parent/Guardian Information</div>
+                        <div class="row mb-4">
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Parent/Guardian Status <span class="required-field">*</span></label>
+                                <select class="form-select" name="parentStatus" onchange="toggleParentSections(this.value)" required>
+                                    <option value="">Select Status</option>
+                                    <option value="both">Both Parents</option>
+                                    <option value="maternal">Maternal Parent Only</option>
+                                    <option value="paternal">Paternal Parent Only</option>
+                                    <option value="guardian">Guardian Only</option>
+                                </select>
+                                <div class="invalid-feedback">Please select your parent/guardian status</div>
+                            </div>
+                        </div>
+    
+                        <!-- Maternal Parent Section -->
+                        <div id="maternal-section" class="parent-section mb-4" style="display: none;">
+                            <h5 class="mb-3">Maternal Parent Information</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Maternal Parent Full Name <span class="required-field">*</span></label>
+                                    <input type="text" class="form-control" name="maternalName">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Maternal Parent ID <span class="required-field">*</span></label>
+                                    <input type="file" class="form-control" name="maternalId" accept="image/*,.pdf">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Maternal Parent Contact <span class="required-field">*</span></label>
+                                    <input type="tel" class="form-control" name="maternalContact" pattern="[0-9]{10}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Maternal Parent Email</label>
+                                    <input type="email" class="form-control" name="maternalEmail">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Maternal Parent Address <span class="required-field">*</span></label>
+                                    <input type="text" class="form-control mb-2" name="maternalAddress1" placeholder="Address Line 1">
+                                    <input type="text" class="form-control" name="maternalAddress2" placeholder="Address Line 2">
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- Paternal Parent Section -->
+                        <div id="paternal-section" class="parent-section mb-4" style="display: none;">
+                            <h5 class="mb-3">Paternal Parent Information</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Paternal Parent Full Name <span class="required-field">*</span></label>
+                                    <input type="text" class="form-control" name="paternalName">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Paternal Parent ID <span class="required-field">*</span></label>
+                                    <input type="file" class="form-control" name="paternalId" accept="image/*,.pdf">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Paternal Parent Contact <span class="required-field">*</span></label>
+                                    <input type="tel" class="form-control" name="paternalContact" pattern="[0-9]{10}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Paternal Parent Email</label>
+                                    <input type="email" class="form-control" name="paternalEmail">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Paternal Parent Address <span class="required-field">*</span></label>
+                                    <input type="text" class="form-control mb-2" name="paternalAddress1" placeholder="Address Line 1">
+                                    <input type="text" class="form-control" name="paternalAddress2" placeholder="Address Line 2">
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- Guardian Section -->
+                        <div id="guardian-section" class="parent-section mb-4" style="display: none;">
+                            <h5 class="mb-3">Guardian Information</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Guardian Full Name <span class="required-field">*</span></label>
+                                    <input type="text" class="form-control" name="guardianName">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Guardian ID <span class="required-field">*</span></label>
+                                    <input type="file" class="form-control" name="guardianId" accept="image/*,.pdf">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Guardian Contact <span class="required-field">*</span></label>
+                                    <input type="tel" class="form-control" name="guardianContact" pattern="[0-9]{10}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Guardian Email</label>
+                                    <input type="email" class="form-control" name="guardianEmail">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Guardian Address <span class="required-field">*</span></label>
+                                    <input type="text" class="form-control mb-2" name="guardianAddress1" placeholder="Address Line 1">
+                                    <input type="text" class="form-control" name="guardianAddress2" placeholder="Address Line 2">
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- Application Type Specific Sections -->
+                        <!-- University Section -->
+                        <div id="university-fields" class="form-section mb-4">
+                            <div class="section-heading">University Application Documents</div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Certified ID Copy <span class="required-field">*</span></label>
+                                    <input type="file" class="form-control" name="uniIdCopy" accept="image/*,.pdf">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Grade 12 Results <span class="required-field">*</span></label>
+                                    <input type="file" class="form-control" name="grade12Results" accept="image/*,.pdf">
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Proof of Residence <span class="required-field">*</span></label>
+                                    <input type="file" class="form-control" name="uniProofResidence" accept="image/*,.pdf">
+                                </div>
+                            </div>
+    
+                            <!-- University Security Section -->
+                            <div class="section-heading">Security Information</div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Create Password <span class="required-field">*</span></label>
+                                    <input type="password" class="form-control" name="uniPassword" 
+                                           onkeyup="checkPasswordStrength(this.value, 'uni')">
+                                    
+                                    <!-- Password Strength Meter -->
+                                    <div class="password-strength-meter">
+                                        <div class="requirement-item">
+                                            <div class="check-icon" id="uni-uppercase-check">
+                                                <i class="fas fa-check"></i>
+                                            </div>
+                                            <span class="requirement-text">Uppercase letter</span>
+                                        </div>
+                                        <div class="requirement-item">
+                                            <div class="check-icon" id="uni-lowercase-check">
+                                                <i class="fas fa-check"></i>
+                                            </div>
+                                            <span class="requirement-text">Lowercase letter</span>
+                                        </div>
+                                        <div class="requirement-item">
+                                            <div class="check-icon" id="uni-number-check">
+                                                <i class="fas fa-check"></i>
+                                            </div>
+                                            <span class="requirement-text">Number</span>
+                                        </div>
+                                        <div class="requirement-item">
+                                            <div class="check-icon" id="uni-special-check">
+                                                <i class="fas fa-check"></i>
+                                            </div>
+                                            <span class="requirement-text">Special character</span>
+                                        </div>
+                                        <div class="requirement-item">
+                                            <div class="check-icon" id="uni-length-check">
+                                                <i class="fas fa-check"></i>
+                                            </div>
+                                            <span class="requirement-text">At least 8 characters</span>
+                                        </div>
+                                        
+                                        <div class="strength-bar">
+                                            <div class="strength-fill" id="uni-strength-fill"></div>
+                                        </div>
+                                        <small class="form-text" id="uni-strength-text">Password strength: Too weak</small>
+                                    </div>
+                                </div>
+    
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Confirm Password <span class="required-field">*</span></label>
+                                    <input type="password" class="form-control" name="uniConfirmPassword" 
+                                           onkeyup="checkPasswordMatch('uni')">
+                                    <small class="form-text" id="uni-password-match"></small>
+                                </div>
+    
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">5-Digit PIN <span class="required-field">*</span></label>
+                                    <input type="password" class="form-control" name="uniPin" maxlength="5"
+                                           onkeyup="checkPinValidity(this.value, 'uni')">
+                                    
+                                    <!-- PIN Requirements -->
+                                    <div class="pin-validation">
+                                        <div class="pin-requirement" id="uni-pin-length">
+                                            <i class="fas fa-circle"></i> Exactly 5 digits
+                                        </div>
+                                        <div class="pin-requirement" id="uni-pin-consecutive">
+                                            <i class="fas fa-circle"></i> No consecutive numbers
+                                        </div>
+                                        <div class="pin-requirement" id="uni-pin-repeating">
+                                            <i class="fas fa-circle"></i> No repeating numbers
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+<!-- College Section -->
+<div id="college-fields" class="form-section mb-4">
+    <div class="section-heading">College Application Documents</div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Certified ID Copy <span class="required-field">*</span></label>
+            <input type="file" class="form-control" name="collegeIdCopy" accept="image/*,.pdf">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Latest Results <span class="required-field">*</span></label>
+            <input type="file" class="form-control" name="collegeResults" accept="image/*,.pdf">
+        </div>
+        <div class="col-12 mb-3">
+            <label class="form-label">Proof of Residence <span class="required-field">*</span></label>
+            <input type="file" class="form-control" name="collegeProofResidence" accept="image/*,.pdf">
+        </div>
+    </div>
+
+    <!-- College Security Section -->
+    <div class="section-heading">Security Information</div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Create Password <span class="required-field">*</span></label>
+            <input type="password" class="form-control" name="collegePassword" 
+                   onkeyup="checkPasswordStrength(this.value, 'college')">
+            
+            <!-- Password Strength Meter -->
+            <div class="password-strength-meter">
+                <div class="requirement-item">
+                    <div class="check-icon" id="college-uppercase-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <span class="requirement-text">Uppercase letter</span>
+                </div>
+                <div class="requirement-item">
+                    <div class="check-icon" id="college-lowercase-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <span class="requirement-text">Lowercase letter</span>
+                </div>
+                <div class="requirement-item">
+                    <div class="check-icon" id="college-number-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <span class="requirement-text">Number</span>
+                </div>
+                <div class="requirement-item">
+                    <div class="check-icon" id="college-special-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <span class="requirement-text">Special character</span>
+                </div>
+                <div class="requirement-item">
+                    <div class="check-icon" id="college-length-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <span class="requirement-text">At least 8 characters</span>
+                </div>
+                
+                <div class="strength-bar">
+                    <div class="strength-fill" id="college-strength-fill"></div>
+                </div>
+                <small class="form-text" id="college-strength-text">Password strength: Too weak</small>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Confirm Password <span class="required-field">*</span></label>
+            <input type="password" class="form-control" name="collegeConfirmPassword" 
+                   onkeyup="checkPasswordMatch('college')">
+            <small class="form-text" id="college-password-match"></small>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">5-Digit PIN <span class="required-field">*</span></label>
+            <input type="password" class="form-control" name="collegePin" maxlength="5"
+                   onkeyup="checkPinValidity(this.value, 'college')">
+            
+            <!-- PIN Requirements -->
+            <div class="pin-validation">
+                <div class="pin-requirement" id="college-pin-length">
+                    <i class="fas fa-circle"></i> Exactly 5 digits
+                </div>
+                <div class="pin-requirement" id="college-pin-consecutive">
+                    <i class="fas fa-circle"></i> No consecutive numbers
+                </div>
+                <div class="pin-requirement" id="college-pin-repeating">
+                    <i class="fas fa-circle"></i> No repeating numbers
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bursary Section -->
+<div id="bursary-fields" class="form-section mb-4">
+    <div class="section-heading">Bursary Application Documents</div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Certified ID Copy <span class="required-field">*</span></label>
+            <input type="file" class="form-control" name="bursaryIdCopy" accept="image/*,.pdf">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Proof of Residence <span class="required-field">*</span></label>
+            <input type="file" class="form-control" name="bursaryProofResidence" accept="image/*,.pdf">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Proof of Income <span class="required-field">*</span></label>
+            <input type="file" class="form-control" name="bursaryProofIncome" accept="image/*,.pdf">
+        </div>
+    </div>
+
+    <!-- Previous Tertiary Education -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <label class="form-label">Previous Tertiary Education</label>
+            <select class="form-select" name="prevTertiary" onchange="togglePreviousTertiary(this.value)">
+                <option value="no">No previous tertiary education</option>
+                <option value="yes">Yes, I have attended tertiary education</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="previous-tertiary-docs" style="display:none;">
+        <div class="row mb-3">
+            <div class="col-12">
+                <label class="form-label">Academic Record <span class="required-field">*</span></label>
+                <input type="file" class="form-control" name="bursaryAcademicRecord" accept="image/*,.pdf">
+            </div>
+        </div>
+    </div>
+
+    <!-- Bursary Security Section -->
+    <div class="section-heading">Security Information</div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Create Password <span class="required-field">*</span></label>
+            <input type="password" class="form-control" name="bursaryPassword" 
+                   onkeyup="checkPasswordStrength(this.value, 'bursary')">
+            
+            <!-- Password Strength Meter -->
+            <div class="password-strength-meter">
+                <div class="requirement-item">
+                    <div class="check-icon" id="bursary-uppercase-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <span class="requirement-text">Uppercase letter</span>
+                </div>
+                <div class="requirement-item">
+                    <div class="check-icon" id="bursary-lowercase-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <span class="requirement-text">Lowercase letter</span>
+                </div>
+                <div class="requirement-item">
+                    <div class="check-icon" id="bursary-number-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <span class="requirement-text">Number</span>
+                </div>
+                <div class="requirement-item">
+                    <div class="check-icon" id="bursary-special-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <span class="requirement-text">Special character</span>
+                </div>
+                <div class="requirement-item">
+                    <div class="check-icon" id="bursary-length-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <span class="requirement-text">At least 8 characters</span>
+                </div>
+                
+                <div class="strength-bar">
+                    <div class="strength-fill" id="bursary-strength-fill"></div>
+                </div>
+                <small class="form-text" id="bursary-strength-text">Password strength: Too weak</small>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Confirm Password <span class="required-field">*</span></label>
+            <input type="password" class="form-control" name="bursaryConfirmPassword" 
+                   onkeyup="checkPasswordMatch('bursary')">
+            <small class="form-text" id="bursary-password-match"></small>
+        </div>
+    </div>
+</div>
+
+<!-- Submit Button -->
+<div class="text-center">
+    <button type="submit" class="btn btn-primary btn-lg px-5">
+        <i class="fas fa-paper-plane me-2"></i> Submit Application
+    </button>
+</div>
+</form>
+</div>
+</div>
+</div>
+
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Initialize the page with University section active
+    window.onload = function() {
+        showForm('university');
+        document.querySelector('[onclick="showForm(\'university\')"]').classList.add('active');
+    };
+
+    // Show/Hide form sections based on application type
+    function showForm(type) {
+        // Reset all buttons and sections
+        document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
+        
+        // Activate selected button and section
+        event.target.classList.add('active');
+        document.getElementById(`${type}-fields`).classList.add('active');
+
+        // Store current form type
+        window.currentFormType = type;
+    }
+
+    // Password Strength Checking
+    function checkPasswordStrength(password, prefix) {
+        const requirements = {
+            uppercase: {
+                regex: /[A-Z]/,
+                element: document.getElementById(`${prefix}-uppercase-check`)
+            },
+            lowercase: {
+                regex: /[a-z]/,
+                element: document.getElementById(`${prefix}-lowercase-check`)
+            },
+            number: {
+                regex: /[0-9]/,
+                element: document.getElementById(`${prefix}-number-check`)
+            },
+            special: {
+                regex: /[!@#$%^&*(),.?":{}|<>]/,
+                element: document.getElementById(`${prefix}-special-check`)
+            },
+            length: {
+                regex: /.{8,}/,
+                element: document.getElementById(`${prefix}-length-check`)
+            }
+        };
+
+        // Check each requirement
+        let strengthScore = 0;
+        Object.entries(requirements).forEach(([key, requirement]) => {
+            const isValid = requirement.regex.test(password);
+            if (isValid) strengthScore++;
+            requirement.element.classList.toggle('valid', isValid);
+        });
+
+        // Update strength bar
+        const strengthFill = document.getElementById(`${prefix}-strength-fill`);
+        const strengthText = document.getElementById(`${prefix}-strength-text`);
+
+        strengthFill.className = 'strength-fill';
+        if (strengthScore <= 2) {
+            strengthFill.classList.add('weak');
+            strengthText.textContent = 'Password strength: Weak';
+            strengthText.style.color = 'var(--danger-color)';
+        } else if (strengthScore <= 4) {
+            strengthFill.classList.add('medium');
+            strengthText.textContent = 'Password strength: Medium';
+            strengthText.style.color = 'var(--warning-color)';
+        } else {
+            strengthFill.classList.add('strong');
+            strengthText.textContent = 'Password strength: Strong';
+            strengthText.style.color = 'var(--success-color)';
+        }
+
+        return strengthScore === 5;
+    }
+
+    // Check Password Match
+    function checkPasswordMatch(prefix) {
+        const password = document.querySelector(`input[name="${prefix}Password"]`).value;
+        const confirmPassword = document.querySelector(`input[name="${prefix}ConfirmPassword"]`).value;
+        const matchText = document.getElementById(`${prefix}-password-match`);
+
+        if (confirmPassword) {
+            if (password === confirmPassword) {
+                matchText.textContent = 'Passwords match';
+                matchText.style.color = 'var(--success-color)';
+                return true;
+            } else {
+                matchText.textContent = 'Passwords do not match';
+                matchText.style.color = 'var(--danger-color)';
+                return false;
+            }
+        }
+        return false;
+    }
+
+    // PIN Validation
+    function checkPinValidity(pin, prefix) {
+        const requirements = {
+            length: {
+                test: pin.length === 5 && /^\d+$/.test(pin),
+                element: document.getElementById(`${prefix}-pin-length`)
+            },
+            consecutive: {
+                test: !/12345|23456|34567|45678|56789|67890|01234/.test(pin),
+                element: document.getElementById(`${prefix}-pin-consecutive`)
+            },
+            repeating: {
+                test: !/(.)\1{2}/.test(pin), // No digit repeated 3 or more times
+                element: document.getElementById(`${prefix}-pin-repeating`)
+            }
+        };
+
+        let isValid = true;
+        Object.entries(requirements).forEach(([key, requirement]) => {
+            const validity = requirement.test;
+            requirement.element.classList.toggle('valid', validity);
+            requirement.element.classList.toggle('invalid', !validity);
+            if (!validity) isValid = false;
+        });
+
+        return isValid;
+    }
+
+    // Toggle Disability Documentation
+    function toggleDisabilityDocs() {
+        const status = document.getElementById('disabilityStatus').value;
+        const docs = document.getElementById('disability-docs');
+        docs.style.display = status === 'yes' ? 'block' : 'none';
+
+        // Toggle required attribute for disability fields
+        const inputs = docs.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            input.required = status === 'yes';
+        });
+    }
+
+    // Toggle Parent/Guardian Sections
+    function toggleParentSections(value) {
+        const sections = {
+            maternal: document.getElementById('maternal-section'),
+            paternal: document.getElementById('paternal-section'),
+            guardian: document.getElementById('guardian-section')
+        };
+
+        // Hide all sections first
+        Object.values(sections).forEach(section => {
+            section.style.display = 'none';
+            section.querySelectorAll('input').forEach(input => {
+                input.required = false;
+            });
+        });
+
+        // Show relevant sections
+        switch(value) {
+            case 'both':
+                sections.maternal.style.display = 'block';
+                sections.paternal.style.display = 'block';
+                sections.maternal.querySelectorAll('input[type="text"], input[type="tel"], input[type="file"]')
+                    .forEach(input => input.required = true);
+                sections.paternal.querySelectorAll('input[type="text"], input[type="tel"], input[type="file"]')
+                    .forEach(input => input.required = true);
+                break;
+            case 'maternal':
+                sections.maternal.style.display = 'block';
+                sections.maternal.querySelectorAll('input[type="text"], input[type="tel"], input[type="file"]')
+                    .forEach(input => input.required = true);
+                break;
+            case 'paternal':
+                sections.paternal.style.display = 'block';
+                sections.paternal.querySelectorAll('input[type="text"], input[type="tel"], input[type="file"]')
+                    .forEach(input => input.required = true);
+                break;
+            case 'guardian':
+                sections.guardian.style.display = 'block';
+                sections.guardian.querySelectorAll('input[type="text"], input[type="tel"], input[type="file"]')
+                    .forEach(input => input.required = true);
+                break;
+        }
+    }
+
+    // Toggle Previous Tertiary Education Documents
+    function togglePreviousTertiary(value) {
+        const docs = document.getElementById('previous-tertiary-docs');
+        docs.style.display = value === 'yes' ? 'block' : 'none';
+
+        const inputs = docs.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.required = value === 'yes';
+        });
+    }
+
+    // Toast Notifications
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('notification-toast');
+        const toastBody = toast.querySelector('.toast-body');
+        
+        toastBody.textContent = message;
+        toast.style.backgroundColor = type === 'success' ? 'var(--success-color)' : 'var(--danger-color)';
+        toast.style.color = 'white';
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 5000);
+    }
+
+    function closeToast() {
+        document.getElementById('notification-toast').classList.remove('show');
+    }
+
+    // Form Submission
+    function submitForm(event) {
+        event.preventDefault();
+        
+        const form = event.target;
+        const formType = window.currentFormType;
+
+        // Check form validity
+        if (!form.checkValidity()) {
+            event.stopPropagation();
+            form.classList.add('was-validated');
+            showToast('Please fill in all required fields', 'error');
+            return;
+        }
+
+        // Validate password strength and match
+        if (!checkPasswordStrength(form[`${formType}Password`].value, formType)) {
+            showToast('Password does not meet strength requirements', 'error');
+            return;
+        }
+
+        if (!checkPasswordMatch(formType)) {
+            showToast('Passwords do not match', 'error');
+            return;
+        }
+
+        // Validate PIN for university and college applications
+        if (formType !== 'bursary') {
+            if (!checkPinValidity(form[`${formType}Pin`].value, formType)) {
+                showToast('Invalid PIN format', 'error');
+                return;
+            }
+        }
+
+        // Generate unique application ID
+        const applicationId = 'APP' + Date.now();
+
+        // Create form data object
+        const formData = new FormData(form);
+        const data = {
+            id: applicationId,
+            type: formType,
+            timestamp: new Date().toISOString(),
+            data: Object.fromEntries(formData)
+        };
+
+        // Store in localStorage (demo purposes)
+        try {
+            localStorage.setItem(`application_${applicationId}`, JSON.stringify(data));
+            showToast(`Application submitted successfully!\nYour Application ID is: ${applicationId}`, 'success');
+            
+            // Reset form
+            form.reset();
+            document.querySelectorAll('.form-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(`${formType}-fields`).classList.add('active');
+            
+            // Reset parent sections
+            document.querySelectorAll('.parent-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Reset disability section
+            document.getElementById('disability-docs').style.display = 'none';
+            
+            // Reset tertiary docs section
+            document.getElementById('previous-tertiary-docs').style.display = 'none';
+        } catch (error) {
+            showToast('Error submitting application. Please try again.', 'error');
+        }
+    }
+</script>
+</body>
+</html>
